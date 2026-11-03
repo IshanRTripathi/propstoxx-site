@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PropStoxx · F · Listed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="landing.css" />
+<style>
+  :root { --ink: #1a1214; --paper: #f6f1e8; --dusk: #140c10; --amber: #c5364a; --copper: #9a2340; --muted: #6e6560; }
+  body { background: var(--dusk); color: #eef1f6; font: 400 17px/1.6 Outfit, system-ui, sans-serif; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 400; letter-spacing: -.02em; margin: 0; }
+
+  nav.top { position: fixed; inset: 0 0 auto; z-index: 80; }
+  nav.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { font: 600 20px Outfit; color: var(--ink); transition: color .4s; }
+  .logo b { color: var(--amber); }
+  body.dark .logo { color: #fff; }
+  body.dark nav.top { background: rgba(21,28,44,.86); backdrop-filter: blur(12px); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; font-weight: 500; border: 1px solid rgba(0,0,0,.16); background: rgba(255,255,255,.7); color: var(--ink); backdrop-filter: blur(10px); }
+  .btn.solid { background: var(--ink); color: #fff; border-color: var(--ink); }
+  body.dark nav .btn { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.2); }
+
+  /* Pinned tour: one tall scroll track, a sticky stage with the WebGL canvas */
+  .tour { height: 520vh; position: relative; }
+
+  .feats { position: absolute; top: 92px; left: 32px; width: 300px; z-index: 4; }
+  .feat { position: absolute; inset: 0 auto auto 0; width: 100%; padding: 18px; border-radius: 18px; background: rgba(255,255,255,.9); color: var(--ink);
+    box-shadow: 0 24px 50px -24px rgba(0,0,0,.4); backdrop-filter: blur(12px); opacity: 0; transform: translateY(-12px) scale(.98); transition: opacity .4s, transform .4s; pointer-events: none; }
+  .feat.on { opacity: 1; transform: none; }
+  .fk { font: 600 11px Outfit; letter-spacing: .12em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
+  .field, .feat .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(0,0,0,.07); font-size: 14px; }
+  .field span, .feat .row span { color: var(--muted); }
+  .field > *, .feat .row > * { white-space: nowrap; }
+  .field s { margin-left: auto; color: #b8b2a8; font-size: 12px; }
+  .ok { color: #1f7a4a; background: #e3f3e9; padding: 3px 9px; border-radius: 999px; font-size: 12px; }
+  .prog { height: 8px; border-radius: 8px; background: #e7e1d6; overflow: hidden; margin: 4px 0 12px; }
+  .prog i { display: block; height: 100%; width: 25%; background: var(--amber); border-radius: 8px; }
+  .milestones { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+  .milestones li { color: #a29d94; padding-left: 22px; position: relative; transition: color .3s; }
+  .milestones li::before { content: ""; position: absolute; left: 0; top: 5px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid currentColor; }
+  .milestones li.done { color: var(--ink); }
+  .milestones li.done::before { background: var(--amber); border-color: var(--amber); }
+  .ff { font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .feat .row[data-row] { opacity: .25; transition: opacity .3s; }
+  .feat .row[data-row].on { opacity: 1; }
+  .feat .row.total { font-weight: 600; border-top: 1.5px solid var(--ink); }
+  .feat .row.total span { color: var(--ink); }
+  .feat .row.total b { font-variant-numeric: tabular-nums; }
+  .lockbtn { margin-top: 12px; text-align: center; padding: 12px; border-radius: 12px; background: var(--amber); color: #111; font-weight: 600; transition: background .3s, color .3s; }
+  .lockbtn.on { background: #1f7a4a; color: #fff; }
+
+  /* F: a privacy indicator that stays for the whole tour, plus listing and lock cards */
+  .hud { position: absolute; top: 84px; left: 32px; z-index: 5; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+    background: rgba(23,25,30,.86); color: #eef1f6; font: 500 12px Outfit; backdrop-filter: blur(10px); white-space: nowrap; }
+  .hud i { width: 8px; height: 8px; border-radius: 50%; background: #3ecf7a; box-shadow: 0 0 0 4px rgba(62,207,122,.2); }
+  .hud span { color: #aab2bf; }
+  .hud b { color: #fff; font-weight: 600; }
+  .hud em { width: 1px; height: 14px; background: rgba(255,255,255,.2); margin: 0 4px; }
+  .hud.pulse { animation: hudpulse .9s ease-out; }
+  @keyframes hudpulse { 0% { box-shadow: 0 0 0 0 rgba(62,207,122,.6); } 100% { box-shadow: 0 0 0 16px rgba(62,207,122,0); } }
+  .feats { top: 134px; }
+  .feat.none { display: none; }
+  .feat.listing { padding: 0; overflow: hidden; }
+  .listing .ph { height: 140px; position: relative; }
+  .listing .tag { position: absolute; left: 10px; top: 10px; font: 700 12px/1.3 Outfit, sans-serif; letter-spacing: .02em; padding: 4px 9px; border-radius: 999px; background: rgba(0,0,0,.6); color: #fff; }
+  .listing .tag.s { left: auto; right: 10px; background: var(--amber); color: #111; }
+  .lbody { padding: 14px 16px 16px; }
+  .lbody .fk { margin-bottom: 4px; }
+  .lbody h3 { font: 600 20px/1.3 Outfit, sans-serif; letter-spacing: -.01em; }
+  .lbody .meta { color: var(--muted); font: 500 14px/1.4 Outfit, sans-serif; }
+  .lbody .price { font: 700 18px/1.2 Outfit, sans-serif; margin-top: 6px; }
+  .seeit { margin-top: 10px; font-size: 13px; font-weight: 500; color: var(--copper); }
+  .flow { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+  .flow li { position: relative; padding-left: 24px; font-size: 13px; color: #a29d94; transition: color .3s; }
+  .flow li::before { content: ""; position: absolute; left: 0; top: 3px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; }
+  .flow li.on { color: var(--ink); }
+  .flow li.on::before { background: var(--amber); border-color: var(--amber); }
+  .flow li.priv.on { color: #1f7a4a; font-weight: 600; }
+  .flow li.priv.on::before { background: #1f7a4a; border-color: #1f7a4a; }
+  .prop-title { display: none; }
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--paper); }
+  .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .poster { position: absolute; inset: 0; }
+  .stage.gl .poster { display: none; }
+
+  .labels { position: absolute; inset: 0; pointer-events: none; }
+  .lb { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font: 500 12px/1.2 Outfit; color: var(--ink);
+    background: rgba(255,255,255,.86); padding: 6px 10px; border-radius: 999px; box-shadow: 0 6px 18px -8px rgba(0,0,0,.35); opacity: 0; transition: opacity .3s; }
+  .lb small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .lb.plan { background: none; box-shadow: none; padding: 0; font: 500 11px/1.25 Outfit; letter-spacing: .06em; text-transform: uppercase; text-align: center; }
+  .lb.plan small { display: block; margin: 2px 0 0; letter-spacing: 0; text-transform: none; }
+  .lb.price { background: var(--ink); color: #fff; font-size: 14px; padding: 9px 14px; }
+  .lb.price small { color: #c9ccd3; }
+
+  .titleblock { position: absolute; right: 32px; bottom: 96px; border: 1.5px solid var(--ink); color: var(--ink); font: 500 11px/1.5 Outfit; letter-spacing: .08em; text-transform: uppercase; }
+  .titleblock div { padding: 6px 12px; }
+  .titleblock div + div { border-top: 1px solid var(--ink); }
+
+  .rail { position: absolute; top: 90px; right: 32px; display: grid; gap: 4px; z-index: 4; }
+  .rail button { all: unset; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: flex-end; font: 500 12px Outfit; letter-spacing: .06em; text-transform: uppercase; color: rgba(23,25,30,.45); padding: 4px 0; transition: color .3s; }
+  .rail button i { width: 18px; height: 2px; background: currentColor; transition: width .3s; }
+  .rail button.on { color: var(--ink); }
+  .rail button.on i { width: 34px; background: var(--amber); }
+  body.dark .rail button { color: rgba(255,255,255,.4); }
+  body.dark .rail button.on { color: #fff; }
+
+  .caps { position: absolute; left: 32px; bottom: 88px; width: min(460px, calc(100% - 64px)); z-index: 4; }
+  .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 28px; border-radius: 22px; background: rgba(255,255,255,.78); color: var(--ink);
+    backdrop-filter: blur(14px); box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); opacity: 0; transform: translateY(18px); transition: opacity .45s, transform .45s; pointer-events: none; }
+  .cap.on { opacity: 1; transform: none; pointer-events: auto; }
+  .cap.dark { background: rgba(14,18,28,.74); color: #eef1f6; }
+  .cap .n { font: 500 12px Outfit; letter-spacing: .14em; text-transform: uppercase; color: var(--copper); }
+  .cap.dark .n { color: var(--amber); }
+  .cap h1 { font-size: clamp(34px, 4.2vw, 54px); line-height: 1.03; margin: 10px 0 12px; }
+  .cap h2 { font-size: clamp(28px, 3.2vw, 42px); line-height: 1.05; margin: 10px 0 12px; }
+  .cap em { font-style: italic; color: var(--copper); }
+  .cap.dark em { color: var(--amber); }
+  .cap p { margin: 0; color: #4a4a47; font-size: 16px; }
+  .cap.dark p { color: #b9c0cc; }
+  .cap .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .cap.dark .btn { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.22); }
+  .cap.dark .btn.solid { background: #fff; color: var(--ink); border-color: #fff; }
+  .clock { display: flex; align-items: center; gap: 12px; margin-top: 16px; font: 600 22px Outfit; font-variant-numeric: tabular-nums; }
+  .clock .bar { flex: 1; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #f6c27a, #ffe9c2 50%, #f08a4b); position: relative; }
+  .clock .bar b { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 4px rgba(234,143,0,.25); }
+  .fine { font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .cap.dark .fine { color: #8790a0; }
+  .hint { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); font: 500 12px Outfit; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
+
+  /* After the tour */
+  .open { padding: 120px 0 40px; }
+  .open h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; }
+  .open h2 em { color: var(--amber); }
+  .open .lede { color: #9aa3b2; max-width: 560px; margin: 16px 0 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .pc { background: #1c2436; border: 1px solid rgba(255,255,255,.08); border-radius: 18px; overflow: hidden; }
+  .pc .ph { height: 170px; position: relative; }
+  .pc .tag { position: absolute; left: 10px; top: 10px; font: 700 12px/1.3 Outfit, sans-serif; letter-spacing: .02em; padding: 4px 9px; border-radius: 999px; background: rgba(0,0,0,.6); }
+  .pc .tag.s { left: auto; right: 10px; background: var(--amber); color: #111; }
+  .pc .b { padding: 14px 16px 18px; }
+  .pc h3 { font: 600 18px/1.3 Outfit, sans-serif; letter-spacing: -.01em; }
+  .pc .meta { color: #9aa3b2; font: 500 14px/1.4 Outfit, sans-serif; }
+  .pc .price { font: 700 18px/1.2 Outfit, sans-serif; margin-top: 6px; }
+  .gate { padding: 120px 0 150px; text-align: center; }
+  .gate h2 { font-size: clamp(38px, 5.6vw, 76px); line-height: 1; }
+  .gate h2 em { color: var(--amber); }
+  .gate p { color: #9aa3b2; max-width: 520px; margin: 20px auto 32px; }
+  .gate .acts { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .gate .btn { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.22); }
+  .gate .btn.solid { background: #fff; color: var(--ink); }
+  footer { border-top: 1px solid rgba(255,255,255,.08); padding: 34px 0 90px; color: #8790a0; font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  /* End of the tour: the stage clips into a card whose bottom edge meets .merge at the top of the next section */
+  :root { --side: max(32px, calc((100vw - 1240px) / 2 + 32px)); }
+  .stage { clip-path: inset(calc(var(--m, 0) * 92px) calc(var(--m, 0) * var(--side)) 0 round calc(var(--m, 0) * 28px) calc(var(--m, 0) * 28px) 0 0); }
+  body { background: #0c111c; }
+  body.dark .stage { background: var(--dusk); }
+  .stage canvas { transform: translateY(calc(var(--m, 0) * 10vh)); }
+  .prop-title { position: absolute; top: 124px; left: 50%; transform: translateX(-50%); width: min(720px, 80%); text-align: center; color: #fff; opacity: 0; pointer-events: none; z-index: 3; }
+  .prop-title .loc { font: 500 12px Outfit; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); }
+  .prop-title h2 { font-size: clamp(40px, 6vw, 78px); line-height: 1; margin: 10px 0 14px; }
+  .prop-title .facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .prop-title .facts span { font: 500 13px Outfit; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); }
+  .prop-title .facts .s { background: var(--amber); color: #111; border-color: var(--amber); }
+  .lb.price { display: none; }
+  .merge { margin: 0 var(--side); background: #1c2436; border: 1px solid rgba(255,255,255,.08); border-top: 0; border-radius: 0 0 28px 28px;
+    padding: 24px 28px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .merge h3 { font-size: 28px; }
+  .merge p { margin: 2px 0 0; color: #9aa3b2; font-size: 14px; }
+  .merge .price { margin-left: auto; text-align: right; }
+  .merge .price b { font: 600 22px Outfit; }
+  .merge .acts { display: flex; gap: 10px; }
+  .merge .btn { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.22); }
+  .merge .btn.solid { background: #fff; color: var(--ink); border-color: #fff; }
+  .proto { padding: 0 0 40px; }
+  .proto .wrap { padding-top: 96px; }
+  .proto .pill { display: inline-block; font: 500 12px Outfit; letter-spacing: .08em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(234,143,0,.4); padding: 7px 12px; border-radius: 999px; }
+  .proto h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.05; margin-top: 20px; max-width: 900px; }
+  .proto h2 em { color: var(--amber); }
+  .proto .lede { color: #9aa3b2; max-width: 600px; margin: 16px 0 44px; }
+  .sheet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .panel { background: #1c2436; border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 26px; }
+  .panel h3 { font-size: 22px; margin-bottom: 16px; }
+  .panel dl { margin: 0; }
+  .panel dl div { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid rgba(255,255,255,.07); font-size: 15px; }
+  .panel dt { color: #9aa3b2; }
+  .panel dd { margin: 0; text-align: right; }
+  .cost { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .cost th, .cost td { padding: 10px 0; border-top: 1px solid rgba(255,255,255,.07); }
+  .cost th { text-align: left; font-weight: 400; color: #9aa3b2; }
+  .cost td { text-align: right; font-variant-numeric: tabular-nums; }
+  .cost .total th, .cost .total td { color: #fff; font-weight: 600; font-size: 17px; border-top: 1px solid rgba(255,255,255,.25); }
+  .note { color: #8790a0; font-size: 13px; margin: 14px 0 0; }
+  .steps3 { margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  .steps3 li { counter-increment: s; position: relative; padding: 12px 0 12px 44px; border-top: 1px solid rgba(255,255,255,.07); color: #b9c0cc; font-size: 15px; }
+  .steps3 li::before { content: counter(s); position: absolute; left: 0; top: 12px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(234,143,0,.15); color: var(--amber); font-weight: 600; font-size: 13px; }
+  .steps3 b { display: block; color: #fff; font-weight: 600; }
+  .map { width: 100%; height: auto; margin-bottom: 10px; background: #151c2c; border-radius: 14px; }
+  .map .road { fill: none; stroke: #3a4560; stroke-width: 6; stroke-linecap: round; }
+  .map .road.thin { stroke-width: 3; }
+  .map .pt { fill: #9aa3b2; }
+  .map .home { fill: var(--amber); stroke: rgba(234,143,0,.3); stroke-width: 8; }
+  .map text { fill: #b9c0cc; font: 500 11px Outfit; }
+  .map text.b { fill: #fff; font-weight: 600; }
+  .app-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 28px; color: #9aa3b2; font-size: 15px; }
+  .app-row b { font-weight: 500; color: #eef1f6; background: rgba(255,255,255,.07); padding: 8px 14px; border-radius: 999px; }
+  .app-row .btn { margin-left: auto; background: #fff; color: var(--ink); border-color: #fff; }
+
+  @media (max-width: 900px) {
+    :root { --side: 16px; }
+    .hud { top: 76px; left: 16px; font-size: 11px; padding: 7px 12px; }
+    .feats { top: 120px; left: 16px; width: min(260px, 64%); }
+    .listing .ph { height: 96px; }
+    .feat { padding: 14px; }
+    .prop-title { top: 116px; width: 74%; }
+    .merge { padding: 20px; }
+    .merge .price { margin-left: 0; text-align: left; }
+    .sheet { grid-template-columns: 1fr; }
+    .app-row .btn { margin-left: 0; }
+    .rail { top: 76px; right: 16px; }
+    .rail button span { display: none; }
+    .caps { left: 16px; right: 16px; width: auto; bottom: 78px; }
+    .cap { padding: 20px; }
+    .cap p { font-size: 15px; }
+    .titleblock { display: none; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="logo" href="#">Prop<b>Stoxx</b></a>
+    <a class="btn" href="#gate">Get the app</a>
+  </div>
+</nav>
+
+<section class="tour">
+  <div class="stage">
+    <div class="poster"><img alt="Yelahanka Vista, design sample" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2000&q=72" /></div>
+    <canvas aria-hidden="true"></canvas>
+    <div class="labels">
+      <div class="lb plan" data-at="-3,0.3,6.6">49 ft<small>14.9 m frontage</small></div>
+      <div class="lb plan" data-at="9.8,0.3,0">33 ft<small>10.0 m deep</small></div>
+      <div class="lb plan" data-at="2.4,0.3,5.4">Entrance<small>faces east</small></div>
+      <div class="lb floor" data-floor="roof">Roof terrace<small>open to the sky</small></div>
+      <div class="lb floor" data-floor="upper">First floor<small>3 bedrooms, family lounge</small></div>
+      <div class="lb floor" data-floor="ground">Ground floor<small>living, kitchen, guest bedroom, deck</small></div>
+      <div class="lb price" data-floor="top">₹1.2Cr – ₹1.6Cr<small>Under construction</small></div>
+    </div>
+    <div class="titleblock"><div>Yelahanka Vista · 4 BHK villa</div><div>Ground floor · cut at 1.2 m</div><div>North → right · Entrance east</div><div>Design sample</div></div>
+
+    <div class="rail">
+      <button class="on" data-go="0"><span>Listed</span><i></i></button>
+      <button data-go="1"><span>See it</span><i></i></button>
+      <button data-go="2"><span>Floors</span><i></i></button>
+      <button data-go="3"><span>Light</span><i></i></button>
+      <button data-go="4"><span>Lock</span><i></i></button>
+    </div>
+
+    <div class="hud" data-hud><i></i><span>Your number</span><b>Private</b><em></em><span>Calls from builders</span><b>0</b></div>
+
+    <div class="feats">
+      <div class="feat listing on">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=700&q=72" /><span class="tag">Under construction</span><span class="tag s">Design sample</span></div>
+        <div class="lbody">
+          <div class="fk">Listed on PropStoxx</div>
+          <h3>Yelahanka Vista</h3>
+          <div class="meta">Yelahanka · 4 BHK villa</div>
+          <div class="price">₹1.2Cr – ₹1.6Cr</div>
+          <div class="seeit">Scroll to see how it looks ↓</div>
+        </div>
+      </div>
+      <div class="feat none"></div>
+      <div class="feat none"></div>
+      <div class="feat none"></div>
+      <div class="feat">
+        <div class="fk">PropStoxx app · Lock the price</div>
+        <div class="row"><span>Price you saw</span><b>₹1,38,00,000</b></div>
+        <div class="lockbtn" data-lock>Lock this price</div>
+        <ol class="flow">
+          <li data-flow>You tap Lock in the app</li>
+          <li data-flow>The builder sees the locked price</li>
+          <li data-flow class="priv">Your phone number stays with you</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="caps">
+      <div class="cap on">
+        <div class="n">01 · Already listed</div>
+        <h1>This home is listed. <em>Now see it properly.</em></h1>
+        <p>Yelahanka Vista is on PropStoxx with its price in plain view. Scroll to see how it looks, starting from the plan.</p>
+      </div>
+      <div class="cap">
+        <div class="n">02 · See how it looks</div>
+        <h2>Watch it <em>take shape.</em></h2>
+        <p>From the plan to the finished villa, before any site visit or sales call.</p>
+      </div>
+      <div class="cap">
+        <div class="n">03 · Floor by floor</div>
+        <h2>Look inside <em>every level.</em></h2>
+        <p>Living, kitchen and a guest bedroom below. Three bedrooms above. A terrace on top.</p>
+      </div>
+      <div class="cap">
+        <div class="n">04 · In real light</div>
+        <h2>See the light <em>at any hour.</em></h2>
+        <p>The entrance faces east. Keep scrolling and the sun moves across the house.</p>
+        <div class="clock"><span data-clock>07:00</span><div class="bar"><b data-sun></b></div></div>
+      </div>
+      <div class="cap dark">
+        <div class="n">05 · Lock the price</div>
+        <h2>Like it? <em>Lock the price.</em></h2>
+        <p>Hold the price you saw while you decide. The builder sees the lock, never your phone number.</p>
+        <div class="acts"><a class="btn solid" href="#gate">Lock it in the app</a><a class="btn" href="#gate">Continue with Google</a></div>
+        <div class="fine">Yelahanka Vista is a design sample. The house is illustrative.</div>
+      </div>
+    </div>
+    <div class="hint" data-hint>Scroll to see it</div>
+    <div class="prop-title" data-title>
+      <div class="loc">Yelahanka · North Bengaluru</div>
+      <h2>Yelahanka Vista</h2>
+      <div class="facts"><span>4 BHK villa</span><span>₹1.2Cr – ₹1.6Cr</span><span>Under construction</span><span class="s">Design sample</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="proto">
+  <div class="merge">
+    <div>
+      <h3>Yelahanka Vista</h3>
+      <p>4 BHK villa · 40 × 60 ft · East-facing · Yelahanka, North Bengaluru</p>
+    </div>
+    <div class="price">
+      <b>₹1.2Cr – ₹1.6Cr</b>
+      <p>Under construction · Possession Dec 2027</p>
+    </div>
+    <div class="acts">
+      <a class="btn solid" href="#gate">Lock it in the app</a>
+      <a class="btn" href="#listing">The listing ↓</a>
+    </div>
+  </div>
+  <div class="wrap" id="listing">
+    <div class="pill reveal">Listed project · Design sample, not live inventory</div>
+    <h2 class="reveal d1">The listing, <em>as it stands.</em></h2>
+    <p class="lede reveal d2">What the builder has listed, what you just walked through, and how a price lock works. Your number is not part of any of it.</p>
+    <div class="sheet">
+      <article class="panel reveal">
+        <h3>The home</h3>
+        <dl>
+          <div><dt>Type</dt><dd>4 BHK villa, ground + first + roof terrace</dd></div>
+          <div><dt>Plot</dt><dd>40 × 60 ft · 2,400 sq ft</dd></div>
+          <div><dt>Built-up</dt><dd>≈ 2,500 sq ft</dd></div>
+          <div><dt>Entrance</dt><dd>Faces east</dd></div>
+          <div><dt>Stage</dt><dd>Under construction</dd></div>
+          <div><dt>Possession</dt><dd>December 2027 (planned)</dd></div>
+          <div><dt>RERA</dt><dd>Shown here for live projects</dd></div>
+        </dl>
+      </article>
+      <article class="panel reveal d1">
+        <h3>How the price lock works</h3>
+        <ol class="steps3">
+          <li><b>Pick the price you saw.</b> The listed band is ₹1.2Cr – ₹1.6Cr.</li>
+          <li><b>Lock it in the app.</b> Sign in with Google. A phone number is optional.</li>
+          <li><b>The builder sees the lock.</b> Not your number, and nobody calls you.</li>
+        </ol>
+        <p class="note">Save, Reserve and Report a listing sit next to Lock in the app.</p>
+      </article>
+      <article class="panel reveal d2">
+        <h3>Where it is</h3>
+        <svg class="map" viewBox="0 0 300 190" role="img" aria-label="Sketch map of North Bengaluru">
+          <path d="M150 0 C150 60 140 110 120 190" class="road" />
+          <path d="M0 120 C80 112 200 108 300 96" class="road thin" />
+          <path d="M40 0 C70 70 90 120 100 190" class="road thin" />
+          <circle cx="150" cy="22" r="5" class="pt" /><text x="160" y="26">Kempegowda Airport</text>
+          <circle cx="146" cy="88" r="8" class="home" /><text x="160" y="92" class="b">Yelahanka</text>
+          <circle cx="128" cy="160" r="5" class="pt" /><text x="140" y="164">Hebbal</text>
+          <circle cx="190" cy="150" r="5" class="pt" /><text x="200" y="154">Manyata Tech Park</text>
+        </svg>
+        <dl>
+          <div><dt>Kempegowda International Airport</dt><dd>≈ 20 km</dd></div>
+          <div><dt>Manyata Tech Park</dt><dd>≈ 13 km</dd></div>
+          <div><dt>Hebbal</dt><dd>≈ 11 km</dd></div>
+        </dl>
+        <p class="note">Approximate road distances from Yelahanka.</p>
+      </article>
+    </div>
+    <div class="app-row reveal">
+      <span>In the app:</span><b>Lock this price</b><b>Save</b><b>Reserve</b><b>Report a listing</b>
+      <a class="btn solid" href="#gate">Get the app</a>
+    </div>
+  </div>
+</section>
+
+<section class="open">
+  <div class="wrap">
+    <h2 class="reveal">Six projects, <em>open right now.</em></h2>
+    <p class="lede reveal d1">Prices on the card. No form before the facts.</p>
+    <div class="grid">
+      <article class="pc reveal"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=72" /><span class="tag">Upcoming</span></div><div class="b"><h3>Vibranium Urban Realty</h3><div class="meta">Whitefield · Apartment</div><div class="price">₹24L – ₹36L</div></div></article>
+      <article class="pc reveal d1"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=72" /><span class="tag">Under construction</span></div><div class="b"><h3>Trifecta Veranza</h3><div class="meta">Bengaluru · Apartment</div><div class="price">₹1.1Cr – ₹1.5Cr</div></div></article>
+      <article class="pc reveal d2"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=72" /><span class="tag">Under construction</span><span class="tag s">Design sample</span></div><div class="b"><h3>Yelahanka Vista</h3><div class="meta">Yelahanka · Villa</div><div class="price">₹1.2Cr – ₹1.6Cr</div></div></article>
+      <article class="pc reveal"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=72" /><span class="tag">Upcoming</span><span class="tag s">Design sample</span></div><div class="b"><h3>Sarjapur Greenline</h3><div class="meta">Sarjapur Road · Apartment</div><div class="price">₹72L – ₹94L</div></div></article>
+      <article class="pc reveal d1"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=72" /><span class="tag">Ready to move</span><span class="tag s">Design sample</span></div><div class="b"><h3>Hennur Courtyard</h3><div class="meta">Hennur · Apartment</div><div class="price">₹58L – ₹81L</div></div></article>
+      <article class="pc reveal d2"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=800&q=72" /><span class="tag">Upcoming</span><span class="tag s">Design sample</span></div><div class="b"><h3>Budigere Rise</h3><div class="meta">Budigere · Apartment</div><div class="price">₹46L – ₹63L</div></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="gate" id="gate">
+  <div class="wrap">
+    <h2 class="reveal">Six are open.<br><em>The rest are one tap away.</em></h2>
+    <p class="reveal d1">Sign in with Google on the web, or get the app to save, lock a price and reserve.</p>
+    <div class="acts reveal d2"><a class="btn solid" href="#">Continue with Google</a><a class="btn" href="#">Get the app</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>PropStoxx · Bengaluru. We never ask for, sell or share your phone number.</span>
+    <span>Design samples and the 3D house are illustrative, not live inventory. House model: Grab3D, CC0.</span>
+  </div>
+</footer>
+
+<nav class="switch"><a href="index.html">Home</a><a href="professional.html">Professional</a><a href="landing-a.html">Shortlist</a><a href="landing-d.html">Motion</a><a class="on" href="landing-f.html">House</a></nav>
+
+<script src="landing.js"></script>
+<script>
+// Chapter UI runs without WebGL so captions still work on the poster fallback.
+(function () {
+  var tour = document.querySelector(".tour");
+  var caps = document.querySelectorAll(".cap");
+  var rail = document.querySelectorAll(".rail button");
+  var hint = document.querySelector("[data-hint]");
+  var stage = tour.querySelector(".stage");
+  var title = document.querySelector("[data-title]");
+  var ui = [document.querySelector(".caps"), document.querySelector(".rail"), document.querySelector(".feats"), document.querySelector(".hud")];
+  // Chapter starts follow tour-3d.js: walls rise from .1, floors part at .48, sun from .7, dusk from .88.
+  var starts = [0, .1, .46, .68, .86];
+  var feats = document.querySelectorAll(".feat");
+  var lock = document.querySelector("[data-lock]");
+  var flow = document.querySelectorAll("[data-flow]");
+  var hud = document.querySelector("[data-hud]");
+  var wasLocked = false;
+  var last = -1;
+  function span() { return tour.offsetHeight - innerHeight; }
+  function update() {
+    var p = Math.min(1, Math.max(0, (scrollY - tour.offsetTop) / span()));
+    window.__tourP = p;
+    var merge = Math.min(1, Math.max(0, (p - .955) / .045));
+    merge = merge * merge * (3 - 2 * merge);
+    stage.style.setProperty("--m", merge.toFixed(4));
+    title.style.opacity = Math.min(1, Math.max(0, (p - .9) / .04));
+    ui.forEach(function (el) {
+      el.style.opacity = 1 - Math.min(1, merge * 3);
+      el.style.pointerEvents = merge > .3 ? "none" : "";
+    });
+    var i = 0;
+    for (var k = 0; k < starts.length; k++) if (p >= starts[k]) i = k;
+    if (i !== last) {
+      caps.forEach(function (c, k) { c.classList.toggle("on", k === i); });
+      rail.forEach(function (b, k) { b.classList.toggle("on", k === i); });
+      feats.forEach(function (f, k) { f.classList.toggle("on", k === i); });
+      last = i;
+    }
+    // Progress within the current chapter drives each feature card's own animation.
+    var end = i + 1 < starts.length ? starts[i + 1] : 1;
+    var k = Math.min(1, Math.max(0, (p - starts[i]) / (end - starts[i])));
+    var locked = i === 4 && k > .2;
+    if (locked !== wasLocked) {
+      lock.classList.toggle("on", locked);
+      lock.textContent = locked ? "✓ Locked · held for you" : "Lock this price";
+      if (locked) { hud.classList.remove("pulse"); void hud.offsetWidth; hud.classList.add("pulse"); }
+      wasLocked = locked;
+    }
+    flow.forEach(function (li, n) { li.classList.toggle("on", i === 4 && k > .2 + n * .15); });
+    document.body.classList.toggle("dark", p > .9 || scrollY > tour.offsetTop + span());
+    hint.style.opacity = p > .02 ? 0 : 1;
+    var t = Math.min(1, Math.max(0, (p - .7) / .2));
+    var mins = Math.round((7 + t * 12) * 60);
+    document.querySelector("[data-clock]").textContent = String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
+    document.querySelector("[data-sun]").style.left = (t * 100) + "%";
+  }
+  rail.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var s = starts[+b.getAttribute("data-go")];
+      scrollTo({ top: tour.offsetTop + span() * (s + .04), behavior: "smooth" });
+    });
+  });
+  addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+})();
+</script>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.170.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/" } }
+</script>
+<script type="module" src="tour-3d.js"></script>
+</body>
+</html>

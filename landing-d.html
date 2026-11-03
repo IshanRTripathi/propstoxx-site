@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PropStoxx · D · In motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="landing.css" />
+<style>
+  :root { --ink: #140c10; --paper: #f6f1e8; --blue: #9a2340; --amber: #c5364a; --muted: #d5c8c4; }
+  body { background: var(--ink); color: #f6f1e8; font: 400 17px/1.6 Outfit, system-ui, sans-serif; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 400; letter-spacing: -.02em; margin: 0; }
+  em { font-style: italic; color: var(--amber); }
+
+  nav.top { position: fixed; inset: 0 0 auto; z-index: 80; transition: background .3s; }
+  nav.top.solid { background: rgba(11,13,18,.82); backdrop-filter: blur(14px); }
+  nav.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { font: 600 20px Outfit; letter-spacing: -.01em; }
+  .logo b { color: var(--amber); }
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; border-radius: 999px; font-weight: 500; border: 1px solid rgba(255,255,255,.18); }
+  .btn.solid { background: #9a2340; color: #fff; border-color: #9a2340; }
+  .btn.ghost:hover { background: rgba(255,255,255,.08); }
+  .g { width: 18px; height: 18px; }
+
+  /* Hero: a deck of priced cards that flattens as you scroll */
+  .hero { height: 220vh; position: relative; }
+  .hero .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; display: grid; place-items: center; perspective: 1400px; }
+  .hero .copy { position: absolute; top: 15vh; left: 0; right: 0; text-align: center; z-index: 3; padding: 0 24px;
+    opacity: calc(1 - var(--p, 0) * 2.2); transform: translateY(calc(var(--p, 0) * -80px)); }
+  .hero h1 { font-size: clamp(44px, 7vw, 96px); line-height: 1; }
+  .hero .copy p { color: var(--muted); max-width: 560px; margin: 20px auto 0; }
+  .deck { display: grid; grid-template-columns: repeat(3, 260px); gap: 22px; transform-style: preserve-3d;
+    transform: translateY(calc(26vh - var(--p, 0) * 26vh)) rotateX(calc(58deg - var(--p, 0) * 58deg)) rotateZ(calc(-24deg + var(--p, 0) * 24deg)) scale(calc(.9 + var(--p, 0) * .12)); }
+  .pc { background: #151922; border: 1px solid rgba(255,255,255,.08); border-radius: 18px; overflow: hidden; box-shadow: 0 40px 60px -30px rgba(0,0,0,.8);
+    transform: translateZ(calc((1 - var(--p, 0)) * var(--z, 0px))); }
+  .pc .ph { height: 150px; position: relative; }
+  .pc .tag { position: absolute; left: 10px; top: 10px; font: 700 12px/1.3 Outfit, sans-serif; letter-spacing: .02em; padding: 4px 9px; border-radius: 999px; background: rgba(0,0,0,.6); }
+  .pc .tag.s { left: auto; right: 10px; background: var(--amber); color: #111; }
+  .pc .b { padding: 14px 16px 16px; }
+  .pc h3 { font: 600 18px/1.3 Outfit, sans-serif; letter-spacing: -.01em; }
+  .pc .meta { color: var(--muted); font: 500 14px/1.4 Outfit, sans-serif; }
+  .pc .price { font: 700 18px/1.2 Outfit, sans-serif; margin-top: 6px; }
+  .hero .caption { position: absolute; bottom: 8vh; left: 0; right: 0; text-align: center; color: var(--muted); font-size: 15px;
+    opacity: calc((var(--p, 0) - .7) * 4); }
+  .hero .caption b { color: #fff; font-weight: 500; }
+
+  /* Story: a 3D phone that turns and changes screen per step */
+  .story { display: block; width: 100%; height: 320vh; position: relative; background: radial-gradient(1200px 700px at 70% 40%, #152443 0%, var(--ink) 70%); }
+  .story .stage { position: sticky; top: 0; height: 100vh; width: 100%; display: grid; grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr); align-items: center; gap: 48px; max-width: 1280px; margin: 0 auto; padding: 0 48px; box-sizing: border-box; }
+  .steps { position: relative; height: 320px; }
+  .step { position: absolute; inset: 0; opacity: 0; transform: translateY(24px); transition: opacity .5s, transform .5s; }
+  .step.on { opacity: 1; transform: none; }
+  .step .n { font: 500 13px Outfit; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+  .step h2 { font-size: clamp(34px, 4vw, 56px); line-height: 1.05; margin: 14px 0 16px; }
+  .step p { color: var(--muted); max-width: 440px; margin: 0; }
+  .dots { display: flex; gap: 8px; margin-top: 28px; position: absolute; bottom: -40px; }
+  .dots i { width: 28px; height: 3px; border-radius: 3px; background: rgba(255,255,255,.18); transition: background .3s; }
+  .dots i.on { background: var(--amber); }
+
+  .scene { perspective: 1600px; display: grid; place-items: center; height: 100%; min-height: 70vh; position: relative; }
+  .phone { --w: 300px; --h: 620px; width: var(--w); height: var(--h); position: relative; transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 10deg)) rotateY(var(--ry, -24deg)) rotateZ(var(--rz, 0deg)); }
+  .phone .layer { position: absolute; inset: 0; border-radius: 46px; background: #2a2f3a; }
+  .phone .face { position: absolute; inset: 0; border-radius: 46px; background: #07080b; padding: 12px; transform: translateZ(8px);
+    box-shadow: inset 0 0 0 2px #3a404d; }
+  .phone .back { position: absolute; inset: 0; border-radius: 46px; background: linear-gradient(140deg, #3b4252, #1b1f27); transform: translateZ(-8px) rotateY(180deg); }
+  .phone .back::after { content: ""; position: absolute; top: 26px; left: 26px; width: 80px; height: 80px; border-radius: 22px; background: #111; box-shadow: inset 0 0 0 2px #444; }
+  .shadow { position: absolute; width: 260px; height: 40px; bottom: 7vh; border-radius: 50%; background: rgba(0,0,0,.55); filter: blur(22px);
+    transform: translateX(calc(var(--ry-n, 0) * 30px)); }
+  .screen { position: absolute; inset: 12px; border-radius: 36px; overflow: hidden; background: #f6f7fa; color: #111; }
+  .notch { position: absolute; top: 10px; left: 50%; width: 92px; height: 26px; margin-left: -46px; border-radius: 20px; background: #07080b; z-index: 5; }
+  .sc { position: absolute; inset: 0; padding: 50px 16px 16px; opacity: 0; transform: scale(.96); transition: opacity .45s, transform .45s; font-size: 13px; line-height: 1.35; }
+  .sc.on { opacity: 1; transform: none; }
+  .sc .h { font: 600 18px Outfit; margin-bottom: 10px; }
+  .sc .sub { color: #667; font-size: 12px; margin-bottom: 12px; }
+  .row { display: flex; gap: 10px; align-items: center; background: #fff; border-radius: 14px; padding: 8px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .row .t { width: 56px; height: 48px; border-radius: 10px; overflow: hidden; flex: none; }
+  .row b { display: block; font-weight: 600; }
+  .row span { color: #667; font-size: 11px; }
+  .row .pr { margin-left: auto; font-weight: 600; color: var(--blue); white-space: nowrap; }
+  .ct { width: 100%; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; }
+  .ct th, .ct td { text-align: left; padding: 9px 8px; border-bottom: 1px solid #eef0f4; font-size: 12px; }
+  .ct th { color: #667; font-weight: 500; }
+  .ct thead td { font-weight: 600; }
+  .lock { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .lock .big { font: 600 28px Outfit; color: var(--blue); margin: 6px 0 2px; }
+  .lock .kv { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #eef0f4; font-size: 12px; }
+  .cta { display: block; text-align: center; background: var(--blue); color: #fff; border-radius: 14px; padding: 13px; font-weight: 600; margin-top: 12px; }
+  .cta.amber { background: var(--amber); color: #111; }
+  .cta.g { background: #fff; color: #111; border: 1px solid #dde1e8; display: flex; justify-content: center; gap: 8px; align-items: center; width: auto; height: auto; }
+  .gate-sc { display: grid; align-content: center; height: 100%; text-align: center; padding: 0 6px; }
+  .gate-sc .mark { font: 600 26px Outfit; margin-bottom: 8px; }
+  .gate-sc .mark b { color: var(--amber); }
+  .fine { color: #667; font-size: 11px; margin-top: 12px; }
+
+  /* Promise + gate */
+  .promise { background: var(--paper); color: #16181d; padding: 120px 0; }
+  .promise h2 { font-size: clamp(36px, 5vw, 64px); line-height: 1.05; max-width: 820px; }
+  .promise em { color: #b35d12; }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 56px; }
+  .vs div { border-radius: 22px; padding: 32px; }
+  .vs .old { background: #e7e1d6; color: #5b5a57; }
+  .vs .new { background: #16181d; color: #eef1f6; }
+  .vs h3 { font-size: 24px; margin-bottom: 14px; }
+  .vs ol { margin: 0; padding-left: 20px; }
+  .vs li { margin: 8px 0; }
+  .gate { padding: 140px 0 160px; text-align: center; background: radial-gradient(900px 500px at 50% 0%, #1b2a4a, var(--ink) 70%); }
+  .gate h2 { font-size: clamp(40px, 6vw, 80px); line-height: 1; }
+  .gate p { color: var(--muted); max-width: 520px; margin: 22px auto 34px; }
+  .gate .acts { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  footer { border-top: 1px solid rgba(255,255,255,.08); padding: 34px 0 90px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .deck { grid-template-columns: repeat(2, 200px); gap: 14px; }
+    .deck .pc:nth-child(n+5) { display: none; }
+    .pc .ph { height: 110px; }
+    .story .stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 0; padding-top: 84px; }
+    .steps { height: 190px; }
+    .step h2 { font-size: 30px; margin: 8px 0 8px; }
+    .step p { font-size: 15px; }
+    .dots { bottom: -14px; }
+    .phone { --w: 230px; --h: 476px; }
+    .vs { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deck, .pc, .phone { transform: none !important; }
+    .hero .copy { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top" data-nav>
+  <div class="wrap">
+    <a class="logo" href="#">Prop<b>Stoxx</b></a>
+    <a class="btn ghost" href="#gate">Get the app</a>
+  </div>
+</nav>
+
+<section class="hero" data-scroll>
+  <div class="stage">
+    <div class="copy">
+      <h1>Every price, <em>out in the open.</em></h1>
+      <p>Six Bengaluru projects, priced on the card. Scroll to look closer. Nobody asks for your number.</p>
+    </div>
+    <div class="deck">
+      <article class="pc" style="--z:120px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=700&q=72" /><span class="tag">Upcoming</span></div><div class="b"><h3>Vibranium Urban Realty</h3><div class="meta">Whitefield · Apartment</div><div class="price">₹24L – ₹36L</div></div></article>
+      <article class="pc" style="--z:40px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=700&q=72" /><span class="tag">Under construction</span></div><div class="b"><h3>Trifecta Veranza</h3><div class="meta">Bengaluru · Apartment</div><div class="price">₹1.1Cr – ₹1.5Cr</div></div></article>
+      <article class="pc" style="--z:160px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=72" /><span class="tag">Upcoming</span><span class="tag s">Design sample</span></div><div class="b"><h3>Sarjapur Greenline</h3><div class="meta">Sarjapur Road · Apartment</div><div class="price">₹72L – ₹94L</div></div></article>
+      <article class="pc" style="--z:80px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=700&q=72" /><span class="tag">Ready to move</span><span class="tag s">Design sample</span></div><div class="b"><h3>Hennur Courtyard</h3><div class="meta">Hennur · Apartment</div><div class="price">₹58L – ₹81L</div></div></article>
+      <article class="pc" style="--z:20px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=700&q=72" /><span class="tag">Under construction</span><span class="tag s">Design sample</span></div><div class="b"><h3>Yelahanka Vista</h3><div class="meta">Yelahanka · Villa</div><div class="price">₹1.2Cr – ₹1.6Cr</div></div></article>
+      <article class="pc" style="--z:130px"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=700&q=72" /><span class="tag">Upcoming</span><span class="tag s">Design sample</span></div><div class="b"><h3>Budigere Rise</h3><div class="meta">Budigere · Apartment</div><div class="price">₹46L – ₹63L</div></div></article>
+    </div>
+    <div class="caption"><b>Six projects, no sign-up.</b> Prices are on the card, not "on request".</div>
+  </div>
+</section>
+
+<section class="story" data-scroll data-steps="3">
+  <div class="stage">
+    <div class="steps">
+      <div class="step on"><div class="n">01 · Look</div><h2>Browse with <em>no number.</em></h2><p>Open any of the six projects. Price band, stage and area are right there. No form appears before the facts do.</p></div>
+      <div class="step"><div class="n">02 · Compare</div><h2>Put them <em>side by side.</em></h2><p>Pick two or three. Price, stage and type line up on your screen. Nothing is sent to a builder.</p></div>
+      <div class="step"><div class="n">03 · Lock</div><h2>Hold the price <em>you saw.</em></h2><p>In the app, lock today's price while you decide. Your number stays optional and is never passed on.</p></div>
+      <div class="dots"><i class="on"></i><i></i><i></i></div>
+    </div>
+    <div class="scene">
+      <div class="shadow"></div>
+      <div class="phone">
+        <div class="back"></div>
+        <div class="layer" style="transform:translateZ(-6px)"></div>
+        <div class="layer" style="transform:translateZ(-3px)"></div>
+        <div class="layer" style="transform:translateZ(0)"></div>
+        <div class="layer" style="transform:translateZ(3px)"></div>
+        <div class="layer" style="transform:translateZ(6px)"></div>
+        <div class="face">
+          <div class="screen">
+            <div class="notch"></div>
+            <div class="sc on">
+              <div class="h">Open projects</div>
+              <div class="sub">Bengaluru · 6 open, no sign-up</div>
+              <div class="row"><div class="t"><img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=200&q=70" /></div><div><b>Vibranium</b><span>Whitefield</span></div><div class="pr">₹24L+</div></div>
+              <div class="row"><div class="t"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=200&q=70" /></div><div><b>Trifecta Veranza</b><span>Bengaluru</span></div><div class="pr">₹1.1Cr+</div></div>
+              <div class="row"><div class="t"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=200&q=70" /></div><div><b>Sarjapur Greenline</b><span>Sarjapur Road</span></div><div class="pr">₹72L+</div></div>
+              <div class="row"><div class="t"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=200&q=70" /></div><div><b>Hennur Courtyard</b><span>Hennur</span></div><div class="pr">₹58L+</div></div>
+              <div class="row"><div class="t"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=200&q=70" /></div><div><b>Budigere Rise</b><span>Budigere</span></div><div class="pr">₹46L+</div></div>
+            </div>
+            <div class="sc">
+              <div class="h">Compare</div>
+              <div class="sub">On your phone only</div>
+              <table class="ct">
+                <thead><tr><th></th><td>Vibranium</td><td>Hennur</td></tr></thead>
+                <tbody>
+                  <tr><th>Area</th><td>Whitefield</td><td>Hennur</td></tr>
+                  <tr><th>Price</th><td>₹24L – 36L</td><td>₹58L – 81L</td></tr>
+                  <tr><th>Stage</th><td>Upcoming</td><td>Ready</td></tr>
+                  <tr><th>Type</th><td>Apartment</td><td>Apartment</td></tr>
+                </tbody>
+              </table>
+              <div class="fine">Hennur Courtyard is a design sample.</div>
+            </div>
+            <div class="sc">
+              <div class="h">Lock the price</div>
+              <div class="sub">Vibranium Urban Realty</div>
+              <div class="lock">
+                <div class="sub" style="margin:0">Price you saw</div>
+                <div class="big">₹24,00,000</div>
+                <div class="kv"><span>Phone required</span><b>No</b></div>
+                <div class="kv"><span>Shared with builder</span><b>Nothing</b></div>
+              </div>
+              <a class="cta amber">Lock this price</a>
+              <div class="fine">Illustrative amount.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="promise">
+  <div class="wrap">
+    <h2 class="reveal">Portals sell your number. <em>We show you the price.</em></h2>
+    <div class="vs">
+      <div class="old reveal d1"><h3>The usual way</h3><ol><li>Price says "On request".</li><li>Enter your mobile to see it.</li><li>Calls and WhatsApps start within minutes.</li></ol></div>
+      <div class="new reveal d2"><h3>On PropStoxx</h3><ol><li>The price is on the card.</li><li>Compare on your own screen.</li><li>Lock the price in the app. Your number stays yours.</li></ol></div>
+    </div>
+  </div>
+</section>
+
+<section class="gate" id="gate">
+  <div class="wrap">
+    <h2 class="reveal">Six are open.<br><em>The rest are one tap away.</em></h2>
+    <p class="reveal d1">Sign in with Google on the web, or get the app to save, lock a price and reserve.</p>
+    <div class="acts reveal d2">
+      <a class="btn solid" href="#">Continue with Google</a>
+      <a class="btn ghost" href="#">Get the app</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>PropStoxx · Bengaluru. We never ask for, sell or share your phone number.</span>
+    <span>Design samples are illustrative, not live inventory.</span>
+  </div>
+</footer>
+
+<nav class="switch"><a href="index.html">Home</a><a href="professional.html">Professional</a><a href="landing-a.html">Shortlist</a><a class="on" href="landing-d.html">Motion</a><a href="landing-f.html">House</a></nav>
+
+<script src="landing.js"></script>
+<script>
+(function () {
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var secs = Array.prototype.slice.call(document.querySelectorAll("[data-scroll]"));
+  var story = document.querySelector(".story");
+  var phone = story.querySelector(".phone");
+  var shadow = story.querySelector(".shadow");
+  var steps = story.querySelectorAll(".step");
+  var screens = story.querySelectorAll(".sc");
+  var dots = story.querySelectorAll(".dots i");
+  var last = -1, ticking = false;
+
+  function progress(el) {
+    var r = el.getBoundingClientRect();
+    var span = el.offsetHeight - innerHeight;
+    return Math.min(1, Math.max(0, -r.top / span));
+  }
+  function frame() {
+    ticking = false;
+    secs.forEach(function (el) { el.style.setProperty("--p", progress(el).toFixed(4)); });
+    var p = progress(story), n = steps.length;
+    var i = Math.min(n - 1, Math.floor(p * n));
+    if (i !== last) {
+      [steps, screens, dots].forEach(function (list) {
+        list.forEach(function (el, k) { el.classList.toggle("on", k === i); });
+      });
+      last = i;
+    }
+    if (reduce) return;
+    // Within each step the phone eases toward a pose; poses alternate sides so every step reads as a turn.
+    var poses = [[12, -26, 4], [6, 22, -3], [14, -14, 0]];
+    var local = p * n - i, a = poses[i], b = poses[Math.min(n - 1, i + 1)];
+    var t = local < .7 ? 0 : (local - .7) / .3;
+    t = t * t * (3 - 2 * t);
+    var rx = a[0] + (b[0] - a[0]) * t, ry = a[1] + (b[1] - a[1]) * t, rz = a[2] + (b[2] - a[2]) * t;
+    phone.style.setProperty("--rx", rx + "deg");
+    phone.style.setProperty("--ry", ry + "deg");
+    phone.style.setProperty("--rz", rz + "deg");
+    shadow.style.setProperty("--ry-n", (ry / 26).toFixed(3));
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  frame();
+})();
+</script>
+</body>
+</html>

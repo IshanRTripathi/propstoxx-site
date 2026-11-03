@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PropStoxx — first screen poses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@340;480;560&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #f4efe6;
+    --cream-dim: #cfc6b8;
+    --ink: #14110e;
+    --copper: #e07a3d;
+    --card: #171410;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0c0e12; color: var(--cream); }
+  body { font-family: Outfit, system-ui, sans-serif; font-weight: 340; }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .view { display: none; min-height: 100vh; }
+  .view.on { display: block; }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 32px; position: relative; z-index: 3;
+  }
+  .brand { font-family: Fraunces, serif; font-size: 22px; letter-spacing: -0.03em; }
+  .ghost {
+    border: 1px solid rgba(244,239,230,.35); border-radius: 999px;
+    padding: 8px 16px; font-size: 14px;
+  }
+  .switch {
+    position: fixed; z-index: 40; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; gap: 4px; padding: 5px;
+    background: rgba(16,14,12,.88); border: 1px solid rgba(244,239,230,.16);
+    border-radius: 999px; backdrop-filter: blur(10px);
+  }
+  .switch a { padding: 8px 14px; border-radius: 999px; font-size: 13px; color: var(--cream-dim); }
+  .switch a.on { background: var(--cream); color: var(--ink); }
+
+  /* A */
+  .hero-a {
+    min-height: 100vh; display: flex; flex-direction: column;
+    background:
+      linear-gradient(180deg, rgba(8,10,14,.28), rgba(8,10,14,.55) 46%, rgba(8,10,14,.94)),
+      url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2000&q=75") center/cover;
+  }
+  .stage { text-align: center; padding: 6vh 24px 0; }
+  .kicker { margin: 0; letter-spacing: .22em; text-transform: uppercase; font-size: 12px; color: #d5e6da; }
+  .finder {
+    margin: 22px auto 0; width: min(720px, 92vw);
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(10,12,16,.78); border: 1px solid rgba(224,122,61,.85);
+    border-radius: 999px; padding: 8px 8px 8px 18px;
+  }
+  .finder input {
+    flex: 1; background: transparent; border: 0; outline: none; font-size: 16px;
+  }
+  .finder input::placeholder { color: #b7aea2; }
+  .go {
+    width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--copper);
+    color: white; font-size: 20px; cursor: pointer;
+  }
+  .fine { margin: 12px 0 0; font-size: 13px; color: var(--cream-dim); }
+  .strip {
+    margin-top: auto; display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px; padding: 28px 28px 88px;
+  }
+  .pcard { background: rgba(18,16,14,.88); border-radius: 14px; overflow: hidden; min-width: 0; }
+  .pcard .ph { height: 112px; }
+  .pcard .body { padding: 10px 12px 12px; }
+  .pcard h3 { margin: 0; font-size: 15px; font-weight: 560; letter-spacing: -0.02em; }
+  .pcard p { margin: 3px 0 0; font-size: 12px; color: var(--cream-dim); }
+  .pcard .price { margin-top: 6px; color: var(--copper); font-size: 14px; }
+  .chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 0 24px 8px; }
+  .chip {
+    background: transparent; border: 1px solid rgba(244,239,230,.28);
+    border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; color: var(--cream);
+  }
+  .chip.on { border-color: var(--copper); }
+
+  /* B */
+  .page-b { min-height: 100vh; background: #101216; padding-bottom: 88px; }
+  .b-search { padding: 0 32px 18px; }
+  .b-search .finder { margin: 0; width: min(760px, 100%); }
+  .tiles {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 240px 200px;
+    gap: 12px; padding: 0 32px;
+  }
+  .tile { position: relative; border-radius: 16px; overflow: hidden; }
+  .tile.wide { grid-row: 1 / span 2; }
+  .tile figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 16px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,.72));
+  }
+  .tile strong { display: block; font-size: 22px; font-weight: 560; letter-spacing: -0.03em; }
+  .tile span { font-size: 13px; color: #efe8dc; }
+  .b-label { padding: 26px 32px 10px; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--cream-dim); }
+  .b-row {
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px; padding: 0 32px;
+  }
+
+  /* C */
+  .split { min-height: 100vh; display: grid; grid-template-columns: 1.45fr .8fr; }
+  .cover { position: relative; min-height: 100vh; }
+  .cover img { position: absolute; inset: 0; }
+  .cover .veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(8,10,14,.2), rgba(8,10,14,.2) 40%, rgba(8,10,14,.88));
+  }
+  .cover .copy { position: absolute; left: 40px; right: 40px; bottom: 108px; z-index: 2; }
+  .cover .kicker { color: #f0d2bf; }
+  .cover h1 {
+    font-family: Fraunces, serif; font-weight: 460; font-size: clamp(42px, 5vw, 72px);
+    line-height: .98; letter-spacing: -0.035em; margin: 10px 0 12px;
+  }
+  .cover .price { font-size: 22px; }
+  .rail { background: #12100e; padding: 88px 18px 100px; display: flex; flex-direction: column; gap: 8px; }
+  .rail .finder { width: 100%; margin: 0 0 10px; }
+  .rail article {
+    display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: center;
+    padding: 8px; border-radius: 12px;
+  }
+  .rail article:hover { background: rgba(255,255,255,.04); }
+  .rail .ph { width: 72px; height: 56px; border-radius: 8px; overflow: hidden; }
+  .rail h3 { margin: 0; font-size: 15px; font-weight: 560; }
+  .rail p { margin: 2px 0 0; font-size: 13px; color: var(--cream-dim); }
+  .hidden { display: none; }
+  @media (max-width: 980px) {
+    .strip, .b-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tiles { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+    .tile.wide { grid-row: auto; min-height: 220px; }
+    .split { grid-template-columns: 1fr; }
+    .cover { min-height: 70vh; }
+    .rail { padding-top: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="switch" id="switch">
+  <a href="#a" data-pose="a">Shortlist</a>
+  <a href="#b" data-pose="b">Corridors</a>
+  <a href="#c" data-pose="c">Cover</a>
+</div>
+
+<section class="view" id="a">
+  <div class="hero-a">
+    <div class="nav"><a class="brand" href="#a">PropStoxx</a><a class="ghost" href="#a">Get the app</a></div>
+    <div class="stage">
+      <p class="kicker">Six Bengaluru projects, open</p>
+      <form class="finder" id="search-form">
+        <input id="q" type="search" placeholder="Search an area, a budget, or a project" autocomplete="off" />
+        <button class="go" type="submit" aria-label="Search">→</button>
+      </form>
+      <p class="fine">No number collected.</p>
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip" type="button" data-q="whitefield">Whitefield</button>
+      <button class="chip" type="button" data-q="sarjapur">Sarjapur Road</button>
+      <button class="chip" type="button" data-q="hennur">Hennur</button>
+      <button class="chip" type="button" data-q="yelahanka">Yelahanka</button>
+      <button class="chip" type="button" data-q="budigere">Budigere</button>
+      <button class="chip" type="button" data-q="upcoming">Upcoming</button>
+    </div>
+    <div class="strip" id="strip">
+      <article class="pcard" data-s="vibranium whitefield apartment upcoming">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Vibranium Urban Realty</h3><p>Whitefield · Upcoming</p><div class="price">₹24L – ₹36L</div></div>
+      </article>
+      <article class="pcard" data-s="trifecta veranza apartment under construction bengaluru">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Trifecta Veranza</h3><p>Bengaluru · Under construction</p><div class="price">₹1.1Cr – ₹1.5Cr</div></div>
+      </article>
+      <article class="pcard" data-s="sarjapur greenline apartment design sample">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Sarjapur Greenline</h3><p>Sarjapur Road · Design sample</p><div class="price">₹72L – ₹94L</div></div>
+      </article>
+      <article class="pcard" data-s="hennur courtyard apartment design sample">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Hennur Courtyard</h3><p>Hennur · Design sample</p><div class="price">₹58L – ₹81L</div></div>
+      </article>
+      <article class="pcard" data-s="yelahanka vista villa design sample">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Yelahanka Vista</h3><p>Yelahanka · Design sample</p><div class="price">₹1.2Cr – ₹1.6Cr</div></div>
+      </article>
+      <article class="pcard" data-s="budigere rise apartment design sample">
+        <div class="ph"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=600&q=70" /></div>
+        <div class="body"><h3>Budigere Rise</h3><p>Budigere · Design sample</p><div class="price">₹46L – ₹63L</div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="b">
+  <div class="page-b">
+    <div class="nav"><a class="brand" href="#b">PropStoxx</a><a class="ghost" href="#b">Get the app</a></div>
+    <div class="b-search"><form class="finder"><input type="search" placeholder="Search a corridor or a project" /><button class="go" type="button" aria-label="Search">→</button></form></div>
+    <div class="tiles">
+      <figure class="tile wide"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=70" /><figcaption><strong>Whitefield</strong><span>Purple Line · ITPL · 1 project</span></figcaption></figure>
+      <figure class="tile"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=800&q=70" /><figcaption><strong>Sarjapur Road</strong><span>ORR · 1 project</span></figcaption></figure>
+      <figure class="tile"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=70" /><figcaption><strong>Hennur</strong><span>Manyata side · 1 project</span></figcaption></figure>
+      <figure class="tile"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=70" /><figcaption><strong>Yelahanka</strong><span>Airport road · 1 project</span></figcaption></figure>
+      <figure class="tile"><img alt="" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=70" /><figcaption><strong>Budigere</strong><span>Hoskote corridor · 1 project</span></figcaption></figure>
+    </div>
+    <p class="b-label">Projects in view</p>
+    <div class="b-row">
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Vibranium</h3><p>Whitefield</p><div class="price">₹24–36L</div></div></article>
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Trifecta</h3><p>Bengaluru · no corridor tile</p><div class="price">₹1.1–1.5Cr</div></div></article>
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Greenline</h3><p>Design sample</p><div class="price">₹72–94L</div></div></article>
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Courtyard</h3><p>Design sample</p><div class="price">₹58–81L</div></div></article>
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Vista</h3><p>Design sample</p><div class="price">₹1.2–1.6Cr</div></div></article>
+      <article class="pcard"><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=500&q=70" /></div><div class="body"><h3>Rise</h3><p>Design sample</p><div class="price">₹46–63L</div></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="c">
+  <div class="split">
+    <div class="cover">
+      <img alt="" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1800&q=75" />
+      <div class="veil"></div>
+      <div class="nav" style="position:absolute;left:0;right:0"><a class="brand" href="#c">PropStoxx</a><a class="ghost" href="#c">Get the app</a></div>
+      <div class="copy">
+        <p class="kicker">Upcoming · Whitefield · Apartment</p>
+        <h1>Vibranium Urban Realty</h1>
+        <div class="price">₹24L – ₹36L</div>
+        <p class="fine">Open to look. No number collected.</p>
+      </div>
+    </div>
+    <aside class="rail">
+      <form class="finder"><input type="search" placeholder="Search the other five" /><button class="go" type="button" aria-label="Search">→</button></form>
+      <article><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=240&q=70" /></div><div><h3>Trifecta Veranza</h3><p>₹1.1Cr – ₹1.5Cr · Under construction</p></div></article>
+      <article><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=240&q=70" /></div><div><h3>Sarjapur Greenline</h3><p>₹72L – ₹94L · Design sample</p></div></article>
+      <article><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=240&q=70" /></div><div><h3>Hennur Courtyard</h3><p>₹58L – ₹81L · Design sample</p></div></article>
+      <article><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=240&q=70" /></div><div><h3>Yelahanka Vista</h3><p>₹1.2Cr – ₹1.6Cr · Design sample</p></div></article>
+      <article><div class="ph"><img alt="" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&w=240&q=70" /></div><div><h3>Budigere Rise</h3><p>₹46L – ₹63L · Design sample</p></div></article>
+    </aside>
+  </div>
+</section>
+
+<script>
+  function show(id) {
+    document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("on", v.id === id); });
+    document.querySelectorAll(".switch a").forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-pose") === id); });
+  }
+  function fromHash() {
+    var id = (location.hash || "#a").slice(1);
+    if (id !== "a" && id !== "b" && id !== "c") id = "a";
+    show(id);
+  }
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+
+  var input = document.getElementById("q");
+  function filter() {
+    var q = (input.value || "").trim().toLowerCase();
+    document.querySelectorAll("#strip .pcard").forEach(function (card) {
+      var hay = card.getAttribute("data-s") || "";
+      card.classList.toggle("hidden", q.length > 0 && hay.indexOf(q) === -1);
+    });
+    document.querySelectorAll("#chips .chip").forEach(function (chip) {
+      chip.classList.toggle("on", chip.getAttribute("data-q") === q);
+    });
+  }
+  document.getElementById("search-form").addEventListener("submit", function (e) { e.preventDefault(); filter(); });
+  input.addEventListener("input", filter);
+  document.getElementById("chips").addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip");
+    if (!chip) return;
+    input.value = chip.getAttribute("data-q");
+    filter();
+  });
+</script>
+</body>
+</html>
