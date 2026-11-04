@@ -84,11 +84,12 @@ header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid 
 .launch-band .btn{background:#fff;color:var(--black)}
 .launch-band .ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7)}
 .searchbox{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:18px;border:1px solid #eee6e3}
-.search-tabs{display:flex;gap:0;margin:0 auto 14px;width:fit-content;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#faf8f7}
-.search-tabs button{border:0;border-right:1px solid var(--line);background:transparent;color:#51494b;padding:10px 18px;border-radius:0;font-size:13px;font-weight:600;letter-spacing:.01em;cursor:pointer;box-shadow:none}
-.search-tabs button:last-child{border-right:0}
-.search-tabs button:hover{background:#fff;color:var(--black)}
-.search-tabs button.active{background:var(--black);color:#fff}
+.search-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin:2px auto 18px;width:fit-content;max-width:100%;padding:4px;border-radius:999px;background:#F4EFEC;border:1px solid #E8E0DC}
+.search-tabs button{display:inline-flex;align-items:center;border:0;background:transparent;color:#6a6163;padding:9px 16px;border-radius:999px;font-size:13.5px;font-weight:600;letter-spacing:.01em;cursor:pointer;box-shadow:none;transition:background .2s ease,color .2s ease,box-shadow .2s ease}
+.search-tabs button:hover{color:var(--black);background:rgba(255,255,255,.72)}
+.search-tabs button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.search-tabs button.active{background:#fff;color:var(--black);box-shadow:0 1px 2px rgba(23,19,22,.06),0 6px 16px rgba(23,19,22,.08)}
+.search-tabs button.active::before{content:"";display:inline-block;width:6px;height:6px;margin-right:8px;border-radius:50%;background:var(--red);transform:translateY(-1px)}
 .search-fields{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px}
 .field{border:1px solid var(--line);border-radius:7px;padding:9px 12px;min-width:0}
 .field label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#8b8081;font-weight:800}
