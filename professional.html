@@ -16,7 +16,8 @@
  --serif:"Playfair Display",Georgia,serif;--sans:"DM Sans",Arial,sans-serif;
 }
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}
-body{margin:0;background:#fff;color:var(--black);font:15px/1.6 var(--sans)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--black);font:15px/1.6 var(--sans);overflow-x:hidden}
 a{color:inherit;text-decoration:none}button,input,select{font:inherit}
 img{display:block;width:100%;height:100%;object-fit:cover}
 .wrap{width:min(1200px,calc(100% - 48px));margin:auto}
@@ -178,7 +179,8 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
 .faq summary{cursor:pointer;font-weight:700}
 .faq p{margin:8px 0 0;color:var(--muted);font-size:13px}
 .copyright a{color:#fff}
-.switch{position:fixed;z-index:40;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;background:rgba(15,10,11,.92);font:600 12px/1 var(--sans)}
+.switch{position:fixed;z-index:40;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:4px;max-width:calc(100vw - 12px);overflow-x:auto;padding:5px;border-radius:999px;background:rgba(15,10,11,.92);font:600 12px/1 var(--sans)}
+.switch::-webkit-scrollbar{display:none}
 .switch a{color:#e6d5d4;padding:8px 10px;border-radius:999px;white-space:nowrap}
 .switch a.on{background:#F3EDE0;color:#171316}
 .property{cursor:pointer}
@@ -227,10 +229,12 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
 @media(max-width:700px){
  .wrap{width:min(100% - 32px,560px)}.topline{display:none}.nav{height:68px}
  .navlinks{display:none;position:absolute;left:0;right:0;top:68px;background:#fff;padding:18px 24px 24px;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:18px}
- .navlinks.open{display:flex}.menu{display:block}.nav-actions .btn{display:none}
- .hero{min-height:0}.show-phone{--w:210px;--h:440px}
+ .navlinks.open{display:flex}.menu{display:block}
+ .nav-actions .btn{padding:10px 12px;font-size:13px}
+ .hero{min-height:0}.hero-inner{padding:36px 0 88px}.show-copy{min-height:220px}.show-phone{--w:200px;--h:420px}
  .deck{grid-template-columns:1fr}
- .search-fields,.property-grid,.about-grid,.cta-inner{grid-template-columns:1fr}
+ .search-fields,.property-grid,.about-grid,.trust-grid,.about-points,.cta-inner{grid-template-columns:1fr}
+ .property-bottom{flex-wrap:wrap;align-items:flex-start}
  .cta-inner{align-items:flex-start;flex-direction:column}
  .copyright{flex-direction:column}
 }
@@ -243,7 +247,7 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
  <div class="wrap nav">
   <a class="brand" href="index.html"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8v10H3z"/><path d="M9 21v-6h6v6"/></svg></span>PropStoxx</a>
   <nav class="navlinks" id="navlinks"><a href="#launches">New launches</a><a href="#properties" class="active">Projects</a><a href="#clearer">A clearer view</a></nav>
-  <div class="nav-actions"><a class="btn btn-red" href="#gate">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a><button class="menu" id="menu" aria-label="Open menu">☰</button></div>
+  <div class="nav-actions"><a class="btn btn-red" href="get-the-app.html">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a><button class="menu" id="menu" aria-label="Open menu">☰</button></div>
  </div>
 </header>
 <main>
@@ -322,31 +326,31 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
  <div class="property-grid">
   <article class="property" data-open="vibranium" data-area="whitefield" data-stage="upcoming" data-type="apartment" data-min="24">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=80" alt="Vibranium Urban Realty"><span class="property-status">Upcoming</span></div>
-   <div class="property-body"><div class="location">Whitefield, Bengaluru</div><h3>Vibranium Urban Realty</h3><p class="property-desc">Upcoming apartments. The band is on the card. Looking does not ask for a number.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Whitefield</span></div><div class="property-bottom"><div class="price">₹24L – ₹36L<small>On the card</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Save, lock, reserve and a report stay in the app.</p></div>
+   <div class="property-body"><div class="location">Whitefield, Bengaluru</div><h3>Vibranium Urban Realty</h3><p class="property-desc">Upcoming apartments. The band is on the card. Looking does not ask for a number.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Whitefield</span></div><div class="property-bottom"><div class="price">₹24L – ₹36L<small>On the card</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Save, lock, reserve and a report stay in the app.</p></div>
   </article>
   <article class="property" data-open="trifecta" data-area="bengaluru" data-stage="under-construction" data-type="apartment" data-min="110">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1000&q=80" alt="Trifecta Veranza"><span class="property-status">Under construction</span></div>
-   <div class="property-body"><div class="location">Bengaluru</div><h3>Trifecta Veranza</h3><p class="property-desc">Under construction. The band is visible before any conversation.</p><div class="specs"><span>Apartment</span><span>Under construction</span></div><div class="property-bottom"><div class="price">₹1.1Cr – ₹1.5Cr<small>On the card</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">A real project in this preview.</p></div>
+   <div class="property-body"><div class="location">Bengaluru</div><h3>Trifecta Veranza</h3><p class="property-desc">Under construction. The band is visible before any conversation.</p><div class="specs"><span>Apartment</span><span>Under construction</span></div><div class="property-bottom"><div class="price">₹1.1Cr – ₹1.5Cr<small>On the card</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">A real project in this preview.</p></div>
   </article>
   <article class="property" data-open="sarjapur" data-area="sarjapur" data-stage="upcoming" data-type="apartment" data-min="72">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=1000&q=80" alt="Sarjapur Greenline, design sample"><span class="property-status k">Design sample</span></div>
-   <div class="property-body"><div class="location">Sarjapur Road · Design sample</div><h3>Sarjapur Greenline</h3><p class="property-desc">A design sample. The price is illustrative, not live inventory.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹72L – ₹94L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Marked so it is not mistaken for a live listing.</p></div>
+   <div class="property-body"><div class="location">Sarjapur Road · Design sample</div><h3>Sarjapur Greenline</h3><p class="property-desc">A design sample. The price is illustrative, not live inventory.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹72L – ₹94L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Marked so it is not mistaken for a live listing.</p></div>
   </article>
   <article class="property" data-open="hennur" data-area="hennur" data-stage="ready" data-type="apartment" data-min="58">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=80" alt="Hennur Courtyard, design sample"><span class="property-status k">Design sample</span></div>
-   <div class="property-body"><div class="location">Hennur · Design sample</div><h3>Hennur Courtyard</h3><p class="property-desc">A design sample for Hennur. The price is not a live quote.</p><div class="specs"><span>Apartment</span><span>Ready to move</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹58L – ₹81L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Nothing here starts a call.</p></div>
+   <div class="property-body"><div class="location">Hennur · Design sample</div><h3>Hennur Courtyard</h3><p class="property-desc">A design sample for Hennur. The price is not a live quote.</p><div class="specs"><span>Apartment</span><span>Ready to move</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹58L – ₹81L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Nothing here starts a call.</p></div>
   </article>
   <article class="property" data-open="yelahanka" data-area="yelahanka" data-stage="under-construction" data-type="villa" data-min="120">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Yelahanka Vista, design sample"><span class="property-status k">Design sample</span></div>
-   <div class="property-body"><div class="location">Yelahanka · Design sample</div><h3>Yelahanka Vista</h3><p class="property-desc">A design sample villa. The photograph stands in for a listing photo.</p><div class="specs"><span>Villa</span><span>Under construction</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹1.2Cr – ₹1.6Cr<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">The picture is illustrative.</p></div>
+   <div class="property-body"><div class="location">Yelahanka · Design sample</div><h3>Yelahanka Vista</h3><p class="property-desc">A design sample villa. The photograph stands in for a listing photo.</p><div class="specs"><span>Villa</span><span>Under construction</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹1.2Cr – ₹1.6Cr<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">The picture is illustrative.</p></div>
   </article>
   <article class="property" data-open="budigere" data-area="budigere" data-stage="upcoming" data-type="apartment" data-min="46">
    <div class="property-photo"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80" alt="Budigere Rise, design sample"><span class="property-status k">Design sample</span></div>
-   <div class="property-body"><div class="location">Budigere · Design sample</div><h3>Budigere Rise</h3><p class="property-desc">A design sample for Budigere. The band is a placeholder.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹46L – ₹63L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>View details <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Not a live price.</p></div>
+   <div class="property-body"><div class="location">Budigere · Design sample</div><h3>Budigere Rise</h3><p class="property-desc">A design sample for Budigere. The band is a placeholder.</p><div class="specs"><span>Apartment</span><span>Upcoming</span><span>Sample</span></div><div class="property-bottom"><div class="price">₹46L – ₹63L<small>Sample</small></div><button class="btn btn-dark" type="button" data-details>Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></button></div><p class="extra">Not a live price.</p></div>
   </article>
  </div>
  <p id="noResults" hidden style="margin-top:18px;color:var(--muted)">No matching projects. Try another filter.</p>
- <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap"><a class="btn btn-red" href="#gate">Continue with Google</a><a class="btn btn-outline" href="#gate">Get the app</a></div>
+ <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap"><a class="btn btn-red" href="#gate">Continue with Google</a><a class="btn btn-outline" href="get-the-app.html">Get the app</a></div>
 </div></section>
 <section class="section" id="different" style="padding-top:0"><div class="wrap">
  <div class="section-head"><div><div class="eyebrow">Side by side</div><h2>How looking here is different</h2><p>A portal hides the price behind a number. A sales conversation saves it for the call. Here it is on the card.</p></div></div>
@@ -375,7 +379,7 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
 </div></section>
 <section class="section about" id="about"><div class="wrap about-grid">
  <div class="about-photo"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80" alt=""></div>
- <div class="about-copy"><div class="eyebrow">How PropStoxx works</div><h2>Look first. Decide when you are ready.</h2><p>The site is for looking. Six projects are open, including the price. A phone number is never the ticket in.</p><p>Continue with Google to read the rest of the catalog in the browser. Save, lock a price, reserve and a report stay in the app.</p><div class="about-points"><div><i>1</i> Price on the card</div><div><i>2</i> Compare on this page</div><div><i>3</i> Google for the rest</div><div><i>4</i> Lock it in the app</div></div><a class="btn btn-dark" href="#gate">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a></div>
+ <div class="about-copy"><div class="eyebrow">How PropStoxx works</div><h2>Look first. Decide when you are ready.</h2><p>The site is for looking. Six projects are open, including the price. A phone number is never the ticket in.</p><p>Continue with Google to read the rest of the catalog in the browser. Save, lock a price, reserve and a report stay in the app.</p><div class="about-points"><div><i>1</i> Price on the card</div><div><i>2</i> Compare on this page</div><div><i>3</i> Google for the rest</div><div><i>4</i> Lock it in the app</div></div><a class="btn btn-dark" href="get-the-app.html">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a></div>
 </div></section>
 <section class="launch-band" id="gate">
  <div class="wrap launch-band-top">
@@ -384,11 +388,11 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
  </div>
  <div class="wrap launch-band-acts">
   <a class="btn" href="#properties">Continue with Google</a>
-  <a class="btn ghost" href="#properties">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a>
+  <a class="btn ghost" href="get-the-app.html">Get the app <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg></a>
  </div>
 </section>
 </main>
-<footer><div class="wrap"><div class="copyright"><span>PropStoxx. A number added later in the app is not passed to builders or brokers.</span><span><a href="#clearer">Privacy</a> · <a href="#gate">Get the app</a></span></div></div></footer>
+<footer><div class="wrap"><div class="copyright"><span>PropStoxx. A number added later in the app is not passed to builders or brokers.</span><span><a href="#clearer">Privacy</a> · <a href="get-the-app.html">Get the app</a></span></div></div></footer>
 <nav class="switch"><a href="index.html">Home</a><a class="on" href="professional.html">Professional</a><a href="landing-a.html">Shortlist</a><a href="landing-d.html">Motion</a><a href="landing-f.html">House</a></nav>
 <div class="sheet" id="sheet" hidden>
  <div class="sheet-app" role="dialog" aria-modal="true" aria-labelledby="sheetName">
@@ -445,7 +449,7 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
  function note(text){toast.textContent=text;toast.classList.add("show");clearTimeout(note.t);note.t=setTimeout(function(){toast.classList.remove("show")},2200)}
  function openHome(key){var home=homes[key];if(!home)return;document.getElementById("sheetImg").src=home.img;document.getElementById("sheetImg").alt=home.name;document.getElementById("sheetName").textContent=home.name;document.getElementById("sheetPrice").textContent=home.price;document.getElementById("sheetPlace").textContent=home.place;document.getElementById("sheetType").textContent=home.type;document.getElementById("sheetStage").textContent=home.stage;document.getElementById("sheetAbout").innerHTML="<div><small>Area</small><b>"+home.place+"</b></div><div><small>Stage</small><b>"+home.stage+"</b></div><div><small>Type</small><b>"+home.type+"</b></div><div><small>Price on the card</small><b>"+home.price+"</b></div>";document.getElementById("sheetAboutNote").textContent=home.about+(home.sample?" Marked design sample, not a live listing.":"");heart.classList.remove("on");sheet.hidden=false;document.body.style.overflow="hidden";sheet.querySelector(".sheet-scroll").scrollTop=0}
  function closeHome(){sheet.hidden=true;document.body.style.overflow=""}
- document.querySelectorAll("[data-open]").forEach(function(card){card.addEventListener("click",function(){openHome(card.getAttribute("data-open"))})});
+ document.querySelectorAll("[data-open]").forEach(function(card){card.addEventListener("click",function(){location.href="get-the-app.html"})});
  document.getElementById("sheetClose").addEventListener("click",closeHome);
  sheet.addEventListener("click",function(e){if(e.target===sheet)closeHome()});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!sheet.hidden)closeHome()});

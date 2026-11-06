@@ -9,7 +9,8 @@
 <link rel="stylesheet" href="landing.css" />
 <style>
   :root { --ink: #1a1214; --paper: #f6f1e8; --dusk: #140c10; --amber: #c5364a; --copper: #9a2340; --muted: #6e6560; }
-  body { background: var(--dusk); color: #eef1f6; font: 400 17px/1.6 Outfit, system-ui, sans-serif; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { background: var(--dusk); color: #eef1f6; font: 400 17px/1.6 Outfit, system-ui, sans-serif; overflow-x: hidden; }
   h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 400; letter-spacing: -.02em; margin: 0; }
 
   nav.top { position: fixed; inset: 0 0 auto; z-index: 80; }
@@ -30,7 +31,7 @@
     box-shadow: 0 24px 50px -24px rgba(0,0,0,.4); backdrop-filter: blur(12px); opacity: 0; transform: translateY(-12px) scale(.98); transition: opacity .4s, transform .4s; pointer-events: none; }
   .feat.on { opacity: 1; transform: none; }
   .fk { font: 600 11px Outfit; letter-spacing: .12em; text-transform: uppercase; color: var(--copper); margin-bottom: 10px; }
-  .field, .feat .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(0,0,0,.07); font-size: 14px; }
+    .field, .feat .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(0,0,0,.07); font-size: 14px; flex-wrap: wrap; }
   .field span, .feat .row span { color: var(--muted); }
   .field > *, .feat .row > * { white-space: nowrap; }
   .field s { margin-left: auto; color: #b8b2a8; font-size: 12px; }
@@ -227,6 +228,8 @@
     .cap p { font-size: 15px; }
     .titleblock { display: none; }
     .grid { grid-template-columns: 1fr; }
+    .cap h1, .cap h2 { font-size: 28px; }
+    .field > *, .feat .row > * { white-space: normal; }
   }
 </style>
 </head>
@@ -234,8 +237,8 @@
 
 <nav class="top">
   <div class="wrap">
-    <a class="logo" href="#">Prop<b>Stoxx</b></a>
-    <a class="btn" href="#gate">Get the app</a>
+    <a class="logo" href="index.html">Prop<b>Stoxx</b></a>
+    <a class="btn" href="get-the-app.html">Get the app</a>
   </div>
 </nav>
 
@@ -316,7 +319,7 @@
         <div class="n">05 · Lock the price</div>
         <h2>Like it? <em>Lock the price.</em></h2>
         <p>Hold the price you saw while you decide. The builder sees the lock, never your phone number.</p>
-        <div class="acts"><a class="btn solid" href="#gate">Lock it in the app</a><a class="btn" href="#gate">Continue with Google</a></div>
+        <div class="acts"><a class="btn solid" href="get-the-app.html">Lock it in the app</a><a class="btn" href="#gate">Continue with Google</a></div>
         <div class="fine">Yelahanka Vista is a design sample. The house is illustrative.</div>
       </div>
     </div>
@@ -340,7 +343,7 @@
       <p>Under construction · Possession Dec 2027</p>
     </div>
     <div class="acts">
-      <a class="btn solid" href="#gate">Lock it in the app</a>
+      <a class="btn solid" href="get-the-app.html">Lock it in the app</a>
       <a class="btn" href="#listing">The listing ↓</a>
     </div>
   </div>
@@ -391,7 +394,7 @@
     </div>
     <div class="app-row reveal">
       <span>In the app:</span><b>Lock this price</b><b>Save</b><b>Reserve</b><b>Report a listing</b>
-      <a class="btn solid" href="#gate">Get the app</a>
+      <a class="btn solid" href="get-the-app.html">Get the app</a>
     </div>
   </div>
 </section>
@@ -415,7 +418,7 @@
   <div class="wrap">
     <h2 class="reveal">Six are open.<br><em>The rest are one tap away.</em></h2>
     <p class="reveal d1">Sign in with Google on the web, or get the app to save, lock a price and reserve.</p>
-    <div class="acts reveal d2"><a class="btn solid" href="#">Continue with Google</a><a class="btn" href="#">Get the app</a></div>
+    <div class="acts reveal d2"><a class="btn solid" href="#">Continue with Google</a><a class="btn" href="get-the-app.html">Get the app</a></div>
   </div>
 </section>
 

@@ -113,6 +113,7 @@
         b.classList.toggle("on", on);
         b.textContent = on ? "Comparing" : "Compare prices";
       });
+      e.stopPropagation();
       if (!table) return;
       var rows = ["name", "area", "price", "stage", "type"];
       table.innerHTML = picks.length < 2
@@ -122,6 +123,21 @@
               return "<td>" + (c.getAttribute("data-" + key) || "—") + "</td>";
             }).join("") + "</tr>";
           }).join("") + "</tbody></table>";
+    });
+  });
+
+  var menuBtn = document.getElementById("menu");
+  if (menuBtn) {
+    menuBtn.addEventListener("click", function () {
+      var links = document.querySelector(".site-nav .links");
+      if (links) links.classList.toggle("open");
+    });
+  }
+  document.querySelectorAll(".project, .pc").forEach(function (card) {
+    card.style.cursor = "pointer";
+    card.addEventListener("click", function (e) {
+      if (e.target.closest("[data-pick], a")) return;
+      location.href = "get-the-app.html";
     });
   });
 })();
