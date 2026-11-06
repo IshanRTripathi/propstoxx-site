@@ -133,11 +133,25 @@
       if (links) links.classList.toggle("open");
     });
   }
+  var openKey = {
+    "Vibranium Urban Realty": "vibranium",
+    "Trifecta Veranza": "trifecta",
+    "Sarjapur Greenline": "sarjapur",
+    "Hennur Courtyard": "hennur",
+    "Yelahanka Vista": "yelahanka",
+    "Budigere Rise": "budigere"
+  };
   document.querySelectorAll(".project, .pc").forEach(function (card) {
     card.style.cursor = "pointer";
     card.addEventListener("click", function (e) {
       if (e.target.closest("[data-pick], a")) return;
-      location.href = "get-the-app.html";
+      var name = card.getAttribute("data-name");
+      if (!name) {
+        var heading = card.querySelector("h3");
+        name = heading ? heading.textContent.trim() : "";
+      }
+      var key = openKey[name];
+      if (key) location.href = "professional.html#" + key;
     });
   });
 })();
