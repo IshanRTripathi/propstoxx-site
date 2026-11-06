@@ -186,22 +186,22 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
 .property{cursor:pointer}
 .sheet{position:fixed;inset:0;z-index:80;background:rgba(16,12,14,.55);display:grid;place-items:center}
 .sheet[hidden]{display:none}
-.sheet-app{width:min(440px,100%);height:100%;background:#fff;color:#050505;font-family:Montserrat,Arial,sans-serif;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative}
+.sheet-app{width:min(440px,100%);height:100%;background:#fff;color:var(--black);font-family:Montserrat,Arial,sans-serif;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative}
 .sheet-scroll{flex:1;overflow:auto}
 .sheet-hero{height:280px;position:relative;background:#ddd}
 .sheet-hero img{width:100%;height:100%;object-fit:cover}
 .sheet-back,.sheet-share{position:absolute;top:16px;width:40px;height:40px;border:0;border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .sheet-back{left:16px}.sheet-share{right:16px}
-.sheet-back .ico,.sheet-share .ico,.sheet-bar .ico{width:20px;height:20px;stroke:#050505;fill:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round}
+.sheet-back .ico,.sheet-share .ico,.sheet-bar .ico{width:20px;height:20px;stroke:var(--black);fill:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round}
 .sheet-body{padding:16px 16px 24px}
 .sheet-body h2{margin:0;font:700 26px/1.2 Montserrat,sans-serif}
-.sheet-price{margin:4px 0 6px;color:#ea8f00;font-weight:600;font-size:16px}
+.sheet-price{margin:4px 0 6px;color:var(--black);font-weight:600;font-size:16px}
 .sheet-place{display:flex;gap:6px;align-items:center;font-size:14px}
-.sheet-place .ico{width:16px;height:16px;stroke:#050505;fill:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round}
+.sheet-place .ico{width:16px;height:16px;stroke:var(--black);fill:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round}
 .sheet-chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.sheet-chips span{background:#f0f0f0;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
-.sheet-kicker{margin:16px 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#1565C0}
-.sheet-about{background:#f0f0f0;border-radius:12px;padding:4px 14px}
+.sheet-chips span{background:#F3EDE0;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.sheet-kicker{margin:16px 0 8px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--red)}
+.sheet-about{background:#F3EDE0;border-radius:12px;padding:4px 14px}
 .sheet-about div{padding:10px 0;border-bottom:1px solid rgba(0,0,0,.08)}
 .sheet-about div:last-child{border-bottom:0}
 .sheet-about small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#0008}
@@ -209,12 +209,12 @@ footer{background:#171316;color:#fff;padding:36px 0 96px}
 .sheet-note{margin:8px 0 0;font-size:13px;color:#333}
 .sheet-amenities{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
 .sheet-amenities span{font-size:12px;font-weight:600}
-.sheet-amenities .ico{width:28px;height:28px;stroke:#1565C0;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin:0 auto 6px}
+.sheet-amenities .ico{width:28px;height:28px;stroke:var(--red);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin:0 auto 6px}
 .sheet-bar{display:flex;gap:12px;align-items:center;padding:12px 16px 16px;border-top:1px solid rgba(0,0,0,.08);background:#fff}
-.sheet-heart{width:46px;height:46px;border-radius:50%;border:1.5px solid #1565C0;background:#fff;display:grid;place-items:center;cursor:pointer}
-.sheet-heart.on{background:#1565C0}
+.sheet-heart{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--red);background:#fff;display:grid;place-items:center;cursor:pointer}
+.sheet-heart.on{background:var(--red)}
 .sheet-heart.on .ico{stroke:#fff}
-.sheet-lock{flex:1;height:46px;border:0;border-radius:8px;background:#1565C0;color:#fff;font:700 15px Montserrat,sans-serif;cursor:pointer}
+.sheet-lock{flex:1;height:46px;border:0;border-radius:8px;background:var(--red);color:#fff;font:700 15px Montserrat,sans-serif;cursor:pointer}
 .sheet-toast{position:absolute;left:16px;right:16px;bottom:84px;background:#101015;color:#fff;border-radius:12px;padding:10px 12px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
 .sheet-toast.show{opacity:1}
 @media(min-width:700px){.sheet-app{height:min(860px,100%);border-radius:16px;overflow:hidden}}
